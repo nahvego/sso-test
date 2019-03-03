@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script>
+			function ajax(method, url, payload) {
+				let xhttp = new XMLHttpRequest();
+				let prm = new Promise((res, rej) => {
+					xhttp.onreadystatechange = function() {
+						if (this.readyState === 4) {
+							if (this.status < 300) {
+								res(this);
+							} else {
+								rej(this);
+							}
+						}
+					};
+				});
+				xhttp.open(method, url, true);
+				xhttp.setRequestHeader("Content-type", "application/json");
+				xhttp.send(JSON.stringify(payload));
+				return prm;
+			}
+
+			document.addEventListener("DOMContentLoaded", function() {
+				document.forms[0].addEventListener("submit", send);
+			});
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

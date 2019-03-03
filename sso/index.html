@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script>
+			function ajax(method, url, payload) {
+				let xhttp = new XMLHttpRequest();
+				let prm = new Promise((res, rej) => {
+					xhttp.onreadystatechange = function() {
+						if (this.readyState === 4) {
+							if (this.status < 300) {
+								res(this);
+							} else {
+								rej(this);
+							}
+						}
+					};
+				});
+				xhttp.open(method, url, true);
+				xhttp.setRequestHeader("Content-type", "application/json");
+				xhttp.send(JSON.stringify(payload));
+				return prm;
+			}
+
+			function send(e) {
+				e.preventDefault();
+				ajax("POST", "/login", {
+					username: document.forms[0].username.value,
+					password: document.forms[0].password.value
+				})
+				.then(function(res) {
+					console.log(res);return;
+					let redir = new URL(new URL(document.location).searchParams.get("redirect"));
+					redir.searchParams.append("jwt", JSON.parse(temp0.response).token);
+					document.location = redir;
+				})
+				.catch(console.error);
+			}
+
+			document.addEventListener("DOMContentLoaded", function() {
+				document.forms[0].addEventListener("submit", send);
+			});
+		</script>
+	</head>
+	<body>
+		<form>
+			<input name="username" type="text"     placeholder="Nombre"   />
+			<input name="password" type="password" placeholder="Password" />
+			<input type="submit" value="Login" />
+		</form>
+	</body>
+</html>

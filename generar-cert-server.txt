@@ -1,0 +1,4 @@
+openssl genrsa -out client1.key 2048
+openssl req -new -key client1.key -out client1.csr
+*** generar el SAN correctamente ***
+openssl x509 -req -in client1.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out client1.crt -days 1825 -sha256 -extfile client1.san
