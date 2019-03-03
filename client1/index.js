@@ -15,6 +15,7 @@ let app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
 // Comprueba credenciales!
 app.use(function(req, res, next) {
 	let cookie = req.cookies.jwt || req.query.jwt;
@@ -37,6 +38,8 @@ app.use(function(req, res, next) {
 					if (reqRes.statusCode === 401) {
 						res.clearCookie("jwt");
 						res.clearCookie("userdata");
+						delete req.cookies.jwt;
+						delete req.cookies.userdata;
 						next();
 					} else {
 						console.log(reqRes.statusCode);
@@ -45,6 +48,8 @@ app.use(function(req, res, next) {
 				} else {
 					res.cookie("jwt", cookie);
 					res.cookie("userdata", body);
+					req.cookies.jwt = cookie;
+					req.cookies.userdata = body;
 					next();
 				}
 			}
@@ -84,7 +89,11 @@ app.get("/setcookie", (req, res) => {
 
 
 app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/index.html");	
+	console.log(typeof(req.cookies.userdata.username));
+	res.send(
+		req.cookies.userdata ? `Logueado como ${req.cookies.userdata.username}` : "No logueado"
+	);
+	//res.sendFile(__dirname + "/index.html");	
 });
 
 https.createServer({
